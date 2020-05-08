@@ -1,0 +1,14 @@
+{
+  "name": "hello-npm-express",
+  "version": "1.0.0",
+  "description": "hello world for npm and express",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"testing not configured\" && exit 1"
+  },
+  "author": "ma",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^3.8.3"
+  }
+}
