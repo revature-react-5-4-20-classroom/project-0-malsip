@@ -3,12 +3,14 @@ import bodyparser from 'body-parser';
 import {User, Role, Reimbursement, ReimbursementStatus, ReimbursementType, Expired} from './models/Models';
 import {userRouter} from './routers/userRouter';
 import {reimbursementRouter} from './routers/reimbursementRouter';
+import {sessionMiddleware} from './middleware/sessionMiddleware';
 
 const portNum : number = 3000;
 
 //start express, parse incoming as json
 const app : Application = express();
 app.use(bodyparser.json());
+app.use(sessionMiddleware);
 
 //connect to db
 // const pgp = require('pg-promise');
@@ -42,13 +44,20 @@ app.use((req : Request, res : Response, next: NextFunction) => {
 });
 
 app.post('/login', (req : Request, res : Response) => {
-    let {username, password} = req.body;
+    const {username, password} = req.body;
     if(typeof(username) === 'string' && typeof(password) === 'string'){
-        let login = loginUser(username, password);
-        if(typeof(login) !== 'undefined'){
-            res.json(login);
+        try{
+            let login = loginUser(username, password);
+            if(req.session){
+                req.session.user = login;
+                res.json(login);
+            }
+            else{
+                res.status(400).send('No session');
+            }
         }
-        else{
+        catch(e){
+            console.log(e.message);
             res.status(400).send('Invalid Credentials');
         }
     }

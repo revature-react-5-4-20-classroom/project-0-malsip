@@ -1,7 +1,11 @@
 import express, {Router, Request, Response} from 'express';
+import { authReimbursementAuthorMiddleware, authReimbursementStatusMiddleware, authReimbursementMiddleware } from '../middleware/authMiddleware';
 
 export const reimbursementRouter : Router = express.Router();
 
+reimbursementRouter.use('/', authReimbursementMiddleware);
+reimbursementRouter.use('/status/:statusId', authReimbursementStatusMiddleware);
+reimbursementRouter.use('/author/userId/:userId', authReimbursementAuthorMiddleware);
 
 reimbursementRouter.get('/status/:statusId', (req : Request, res : Response) => {
     const statusId = +req.params.statusId;
@@ -9,7 +13,6 @@ reimbursementRouter.get('/status/:statusId', (req : Request, res : Response) => 
         res.sendStatus(400).send('Status Id must be numeric');
     }
     else {
-        //verify role finance-manager
         //return status with correct id
     }
 })
@@ -20,7 +23,6 @@ reimbursementRouter.get('/author/userId/:userId', (req : Request, res : Response
         res.sendStatus(400).send('User Id must be numeric');
     }
     else {
-        //verify role finance-manager
         //return reimbursement with authorid matching userid
     }
 })
@@ -40,7 +42,6 @@ reimbursementRouter.post('/', (req : Request, res : Response) => {
 })
 
 reimbursementRouter.patch('/', (req : Request, res : Response) => {
-    //allowed role is finance-manager
     //require reimbursementId and all updated fields, any undefined fields will remain unchanged
     //respond with updated data
 })
