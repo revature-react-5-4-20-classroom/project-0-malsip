@@ -1,0 +1,23 @@
+{
+  "name": "ProjectZero",
+  "version": "1.0.0",
+  "description": "Project 0 package dependencies",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "nodemon --exec ts-node src/index.ts",
+    "test": "echo \"testing not configured\" && exit 1"
+  },
+  "author": "Mark Alsip",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.6",
+    "nodemon": "^2.0.3",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^8.1.0",
+    "pg-promise": "^10.5.5"
+  }
+}
