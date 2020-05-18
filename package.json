@@ -12,6 +12,7 @@
   "devDependencies": {
     "@types/express": "^4.17.6",
     "@types/express-session": "^1.17.0",
+    "@types/password-hash": "^1.2.20",
     "@types/pg": "^7.14.3",
     "nodemon": "^2.0.3",
     "ts-node": "^8.10.1",
@@ -20,6 +21,7 @@
   "dependencies": {
     "express": "^4.17.1",
     "express-session": "^1.17.1",
+    "password-hash": "^1.2.2",
     "pg": "^8.2.0"
   }
 }

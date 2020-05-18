@@ -1,4 +1,4 @@
-import express, {Router, Request, Response} from 'express';
+import express, { Router, Request, Response } from 'express';
 import { authReimbursementAuthorMiddleware, authReimbursementStatusMiddleware, authReimbursementMiddleware } from '../middleware/authMiddleware';
 import { queryMachine, updateTable } from '../index';
 
@@ -10,6 +10,7 @@ reimbursementRouter.use('/author/userId/:userId', authReimbursementAuthorMiddlew
 
 reimbursementRouter.get('/status/:statusId', async(req : Request, res : Response) => {
     const statusId = +req.params.statusId;
+
     if(isNaN(statusId)){
         res.sendStatus(400).send('Status Id must be numeric');
     }
@@ -17,6 +18,26 @@ reimbursementRouter.get('/status/:statusId', async(req : Request, res : Response
         //return status with correct id
         try{
             let result = await queryMachine(`SELECT * FROM reimbursement WHERE status = ${statusId} ORDER BY datesubmitted`);
+            res.json(result.rows);
+        }
+        catch(e){
+            throw new Error(e.message);
+        }
+    }
+})
+
+reimbursementRouter.get('/status/:statusId/date-submitted?', async(req : Request, res : Response) => {
+    const statusId = +req.params.statusId;
+    const startDate = +req.query.start;
+    const endDate = +req.query.end;
+
+    if(isNaN(statusId) || isNaN(startDate) || isNaN(endDate)){
+        res.status(400).send('Status Id, Start Date, and End Date must be numeric');
+    }
+    else {
+        //return status with correct id and matching dates
+        try{
+            let result = await queryMachine(`SELECT * FROM reimbursement WHERE status = ${statusId} and dateSubmitted = ${startDate} and dateResolved = ${endDate} ORDER BY datesubmitted`);
             res.json(result.rows);
         }
         catch(e){
@@ -34,6 +55,28 @@ reimbursementRouter.get('/author/userId/:userId', async (req : Request, res : Re
         //return reimbursement with authorid matching userid
         try{
             let result = await queryMachine(`SELECT * FROM reimbursement WHERE author = ${userId} ORDER BY datesubmitted`);
+            res.json(result.rows);
+        }
+        catch(e){
+            throw new Error(e.message);
+        }
+    }
+})
+
+reimbursementRouter.get('/author/userId/:userId/date-submitted?', async (req : Request, res : Response) => {
+    const userId = +req.params.userId;
+    const startDate = +req.query.start;
+    const endDate = +req.query.end;
+
+    console.log(`${userId}, ${startDate}, ${endDate}`)
+
+    if(isNaN(userId) || isNaN(startDate) || isNaN(endDate)){
+        res.status(400).send('User Id, Start Date, and End Date must be numeric');
+    }
+    else {
+        //return reimbursement with authorid matching userid, and proper dates
+        try{
+            let result = await queryMachine(`SELECT * FROM reimbursement WHERE author = ${userId} and dateSubmitted = ${startDate} and dateResolved = ${endDate} ORDER BY datesubmitted`);
             res.json(result.rows);
         }
         catch(e){

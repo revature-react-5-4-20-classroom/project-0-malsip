@@ -1,4 +1,4 @@
-import express, {Router, Request, Response} from 'express';
+import express, { Router, Request, Response } from 'express';
 import { authUserMiddleware, authUserIdMiddleware } from '../middleware/authMiddleware';
 import { queryMachine, updateTable } from '../index';
 

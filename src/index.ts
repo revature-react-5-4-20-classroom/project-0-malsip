@@ -1,11 +1,13 @@
-import express, {Application, Request, Response, NextFunction } from 'express';
+import express, { Application, Request, Response } from 'express';
 import bodyparser from 'body-parser';
-import {Pool, QueryResult} from 'pg';
+import { Pool, QueryResult } from 'pg';
 import User from './models/Users';
-import {userRouter} from './routers/userRouter';
-import {reimbursementRouter} from './routers/reimbursementRouter';
-import {sessionMiddleware} from './middleware/sessionMiddleware';
+import { userRouter } from './routers/userRouter';
+import { reimbursementRouter } from './routers/reimbursementRouter';
+import { sessionMiddleware } from './middleware/sessionMiddleware';
 import { PoolClient } from 'pg';
+import { verifyPassword, hashStoredPasswords } from './hashware/passwordHash';
+
 
 //create dependent variables for connections
 const port : number = 3000;
@@ -48,6 +50,11 @@ app.post('/login', async (req : Request, res : Response) => {
     }
 })
 
+app.use('/hash-passwords', (req : Request, res : Response) => {
+    hashStoredPasswords(res);
+    res.status(200).send('Passwords successfully hashed.');
+});
+
 app.use('/users', userRouter);
 
 app.use('/reimbursements', reimbursementRouter);
@@ -62,9 +69,15 @@ app.listen(port, () => {
 //will return a User from the DB matching the given username and password
 async function loginUser(username : string, password : string) : Promise<User>{
     try{
-        let res : QueryResult = await connectionPool.query(`SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`);
-        if(res.rows.length > 0 && typeof(res.rows[0]) != 'undefined'){          
-            return new User(res.rows[0].userid, res.rows[0].username, res.rows[0].password, res.rows[0].firstname, res.rows[0].lastname, res.rows[0].email, await convertRoleIdToRole(res.rows[0].role));
+        let result : QueryResult = await queryMachine(`SELECT * FROM users WHERE username = '${username}'`);
+        if(result.rows.length > 0 && typeof(result.rows[0]) != 'undefined'){ 
+            let u : User = new User(result.rows[0].userid, result.rows[0].username, result.rows[0].password, result.rows[0].firstname, result.rows[0].lastname, result.rows[0].email, await convertRoleIdToRole(result.rows[0].role));         
+            if(verifyPassword(password, u.password)){
+                return u;
+            }
+            else{
+                throw new Error('loginUser: invalid password');
+            }
         }
         else {
             throw new Error('loginUser: Could not find user.');
@@ -77,9 +90,9 @@ async function loginUser(username : string, password : string) : Promise<User>{
 
 async function convertRoleIdToRole(roleId : number) : Promise<string>{
     try{
-        let res : QueryResult = await queryMachine(`SELECT role FROM role WHERE roleId = '${roleId}'`);
-        if(res.rows.length > 0 && typeof(res.rows[0]) != 'undefined'){          
-            return res.rows[0].role;
+        let result : QueryResult = await queryMachine(`SELECT role FROM role WHERE roleId = '${roleId}'`);
+        if(result.rows.length > 0 && typeof(result.rows[0]) != 'undefined'){          
+            return result.rows[0].role;
         }
         else {
             throw new Error('could not match role');
@@ -93,7 +106,8 @@ async function convertRoleIdToRole(roleId : number) : Promise<string>{
 export async function queryMachine(query : string) : Promise<QueryResult>{
     let client : PoolClient = await connectionPool.connect();
     try{
-        return await connectionPool.query(query); 
+        let result = await connectionPool.query(query);
+        return result; 
     }
     catch(e){
         throw new Error(e.message);
@@ -125,9 +139,7 @@ export async function updateTable(table : string, rowSetter : string, rowId : nu
 }
 
 
-
 //optional implentations
-// - hash stored passwords
 // - paging and sorting endpoints
 // - use json web tokens instead of session storage
 // - be able to submit receipt. what does this mean?
