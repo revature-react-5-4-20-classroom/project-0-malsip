@@ -7,6 +7,7 @@ import { reimbursementRouter } from './routers/reimbursementRouter';
 import { sessionMiddleware } from './middleware/sessionMiddleware';
 import { PoolClient } from 'pg';
 import { verifyPassword, hashStoredPasswords } from './hashware/passwordHash';
+import { createUnsecuredToken } from 'jsontokens'
 
 
 //create dependent variables for connections
@@ -33,6 +34,15 @@ app.post('/login', async (req : Request, res : Response) => {
         try{
             let login = await loginUser(username, password);
             if(req.session){
+                //create a JWT
+                let payload = {
+                    id : login.userId,
+                    role : login.role
+                };
+                const token = createUnsecuredToken(payload); 
+                console.log(token);
+                
+
                 req.session.user = login;
                 res.json(login);
             }
@@ -140,6 +150,7 @@ export async function updateTable(table : string, rowSetter : string, rowId : nu
 
 
 //optional implentations
-// - paging and sorting endpoints
-// - use json web tokens instead of session storage
-// - be able to submit receipt. what does this mean?
+// - ask when should we hash
+// - ask about paging and sorting endpoints, same as what we did?
+// - ask about where to store JWT and encryption
+// - ask about what it means to submit a receipt

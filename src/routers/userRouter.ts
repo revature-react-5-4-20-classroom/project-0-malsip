@@ -10,7 +10,41 @@ userRouter.use('/:userId', authUserIdMiddleware);
 userRouter.get('/', async(req : Request, res : Response) => {
     //return all users from database
     try{
-        let result = await queryMachine('SELECT * FROM users');
+        let result = await queryMachine(`SELECT * FROM users`);
+        res.json(result.rows);
+    }
+    catch(e){
+        throw new Error(e.message);
+    }
+})
+
+userRouter.get('/orders?', async(req : Request, res : Response) => {
+    console.log("all users");
+
+    let limit = 0;
+    let offset = 0;
+    if(typeof(req.query.limit) != 'undefined'){
+        limit = +req.query.limit;
+        if(isNaN(limit)){
+            res.status(400).send('Limit must be numeric');
+            return;
+        }
+        if(typeof(req.query.offset) != 'undefined'){
+            offset = +req.query.offset;
+            if(isNaN(offset)){
+                res.status(400).send('Offset Id must be numeric');
+                return;
+            }
+        }
+    }
+
+    //return all users from database
+    try{
+        let query : string = `SELECT * FROM users`
+        if(limit != 0){
+            query += ` LIMIT ${limit} OFFSET ${offset}`;
+        }
+        let result = await queryMachine(query);
         res.json(result.rows);
     }
     catch(e){
@@ -34,7 +68,7 @@ userRouter.get('/:userId', async (req : Request, res : Response) => {
         }
     }
 })
-//TODO
+
 userRouter.patch('/', async (req : Request, res : Response) => {
     //user must exist and all data is present to update - undefined fields will not be updated
     let {userId, username, password, firstname, lastname, email, role} = req.body;
