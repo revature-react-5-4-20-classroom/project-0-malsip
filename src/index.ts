@@ -34,15 +34,6 @@ app.post('/login', async (req : Request, res : Response) => {
         try{
             let login = await loginUser(username, password);
             if(req.session){
-                //create a JWT
-                let payload = {
-                    id : login.userId,
-                    role : login.role
-                };
-                const token = createUnsecuredToken(payload); 
-                console.log(token);
-                
-
                 req.session.user = login;
                 res.json(login);
             }
@@ -77,13 +68,20 @@ app.listen(port, () => {
 
 
 //will return a User from the DB matching the given username and password
-async function loginUser(username : string, password : string) : Promise<User>{
+async function loginUser(username : string, password : string) : Promise<Object>{
     try{
         let result : QueryResult = await queryMachine(`SELECT * FROM users WHERE username = '${username}'`);
         if(result.rows.length > 0 && typeof(result.rows[0]) != 'undefined'){ 
-            let u : User = new User(result.rows[0].userid, result.rows[0].username, result.rows[0].password, result.rows[0].firstname, result.rows[0].lastname, result.rows[0].email, await convertRoleIdToRole(result.rows[0].role));         
-            if(verifyPassword(password, u.password)){
-                return u;
+            if(verifyPassword(password, result.rows[0].password)){
+                //create a JWT, return a promise of a JWT instead of an object
+                // let payload = {
+                //     id : result.rows[0].userId,
+                //     role : result.rows[0].role
+                // };
+                // const token = createUnsecuredToken(payload); 
+                // console.log(token);
+                // return token;
+                return result.rows[0];
             }
             else{
                 throw new Error('loginUser: invalid password');
@@ -117,6 +115,7 @@ export async function queryMachine(query : string) : Promise<QueryResult>{
     let client : PoolClient = await connectionPool.connect();
     try{
         let result = await connectionPool.query(query);
+        
         return result; 
     }
     catch(e){
@@ -148,9 +147,10 @@ export async function updateTable(table : string, rowSetter : string, rowId : nu
     }
 }
 
+export async function submitReceipt(userId : number, query : string){
+
+}
 
 //optional implentations
-// - ask when should we hash
-// - ask about paging and sorting endpoints, same as what we did?
 // - ask about where to store JWT and encryption
 // - ask about what it means to submit a receipt
