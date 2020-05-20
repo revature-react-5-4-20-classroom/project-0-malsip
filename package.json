@@ -1,0 +1,28 @@
+{
+  "name": "ProjectZero",
+  "version": "1.0.0",
+  "description": "Project 0 package dependencies",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "nodemon --exec ts-node src/index.ts",
+    "test": "echo \"testing not configured\" && exit 1"
+  },
+  "author": "Mark Alsip",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.17.6",
+    "@types/express-session": "^1.17.0",
+    "@types/password-hash": "^1.2.20",
+    "@types/pg": "^7.14.3",
+    "nodemon": "^2.0.3",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "jsontokens": "^3.0.0",
+    "password-hash": "^1.2.2",
+    "pg": "^8.2.0"
+  }
+}

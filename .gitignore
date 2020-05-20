@@ -60,5 +60,8 @@ typings/
 # next.js build output
 .next
 
+# ignore local startup shell script
+startup.sh
+
 #node_modules from npm
 node_modules/
