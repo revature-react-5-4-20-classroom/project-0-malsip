@@ -98,7 +98,7 @@ async function loginUser(username : string, password : string) : Promise<User>{
     }
 }
 
-async function convertRoleIdToRole(roleId : number) : Promise<string>{
+export async function convertRoleIdToRole(roleId : number) : Promise<string>{
     try{
         let result : QueryResult = await queryMachine(`SELECT role FROM role WHERE roleId = '${roleId}'`);
         if(result.rows.length > 0 && typeof(result.rows[0]) != 'undefined'){          
