@@ -1,6 +1,7 @@
 import express, { Router, Request, Response } from 'express';
 import { authUserMiddleware, authUserIdMiddleware } from '../middleware/authMiddleware';
-import { queryMachine, updateTable } from '../index';
+import { queryMachine, updateTable, convertRoleIdToRole } from '../index';
+import { hashPassword } from '../hashware/passwordHash';
 
 export const userRouter : Router = express.Router();
 
@@ -87,11 +88,20 @@ userRouter.patch('/', async (req : Request, res : Response) => {
         //check each variable - if valid, run an update for the new value
         try{
             await updateTable('users', 'userid', userId, 'username', username, 'string');
-            await updateTable('users', 'userid', userId, 'password', password, 'string');
+            await updateTable('users', 'userid', userId, 'password', hashPassword(password), 'string');
             await updateTable('users', 'userid', userId, 'firstname', firstname, 'string');
             await updateTable('users', 'userid', userId, 'lastname', lastname, 'string');
             await updateTable('users', 'userid', userId, 'email', email, 'string');
-            await updateTable('users', 'userid', userId, 'role', role, 'number');
+            if(typeof(role) == 'number' && role > 0){
+                try{
+                    convertRoleIdToRole(role);
+                    await updateTable('users', 'userid', userId, 'role', role, 'number');
+                }
+                catch(e){
+                    console.log(e.message)
+                }
+            }
+            
         }
         catch(e){
             throw new Error(e.message);

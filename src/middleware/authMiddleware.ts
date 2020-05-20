@@ -8,7 +8,13 @@ export const authReimbursementMiddleware = (req : Request, res : Response, next 
         //post is allowed for all, patch is allowed for finance-manager
         if(req.method === 'POST'){
             console.log('POST');
-            next();
+            if(!req.session || !req.session.user){
+                console.log('No session or not logged in');
+                res.status(401).send('The incoming token has expired');
+            }
+            else {
+                next();
+            }
         }
         else if(req.method === 'PATCH'){
             console.log('PATCH');

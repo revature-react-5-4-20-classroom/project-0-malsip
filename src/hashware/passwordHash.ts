@@ -25,3 +25,9 @@ export function verifyPassword(given : string, stored : string) : boolean{
     }
     return false;
 }
+
+export function hashPassword(password : string){
+    if(!isHashed(password)){
+        return generate(password);
+    }
+}

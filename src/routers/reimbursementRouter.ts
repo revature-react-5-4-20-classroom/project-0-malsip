@@ -139,10 +139,10 @@ reimbursementRouter.get('/author/userId/:userId*', async (req : Request, res : R
 
 
 reimbursementRouter.post('/', async (req : Request, res : Response) => {
-    let {reimbursementId, author, amount, dateSubmitted, dateResolved, description, resolver, status, type} = req.body;
+    let {reimbursementId, amount, dateSubmitted, dateResolved, description, resolver, status, type} = req.body;
 
     //resolver and type can be left empty
-    if((typeof(reimbursementId) == 'number' && reimbursementId === 0) && typeof(author) == 'number' && typeof(amount) == 'number' && typeof(dateSubmitted) == 'number' && typeof(dateResolved) == 'number' && typeof(description) == 'string' && (typeof(resolver) == 'number' || typeof(resolver) == 'undefined') && typeof(status) == 'number' && (typeof(type) == 'number' || typeof(type) == 'undefined')){
+    if((typeof(reimbursementId) == 'number' && reimbursementId === 0) && (req.session && req.session.user) && typeof(amount) == 'number' && typeof(dateSubmitted) == 'number' && typeof(dateResolved) == 'number' && typeof(description) == 'string' && (typeof(resolver) == 'number' || typeof(resolver) == 'undefined') && typeof(status) == 'number' && (typeof(type) == 'number' || typeof(type) == 'undefined')){
         //add reimbursement to database
         try{
             if(typeof(resolver) == 'undefined'){
@@ -151,8 +151,8 @@ reimbursementRouter.post('/', async (req : Request, res : Response) => {
             if(typeof(type) == 'undefined'){
                 type = 'NULL';
             }
-            console.log(`INSERT INTO reimbursement values(DEFAULT, ${author}, ${amount}, ${dateSubmitted}, ${dateResolved}, ${description}, ${resolver}, ${status}, ${type})`);
-            let result = await queryMachine(`INSERT INTO reimbursement values(DEFAULT, ${author}, ${amount}, ${dateSubmitted}, ${dateResolved}, '${description}', ${resolver}, ${status}, ${type})`);
+            console.log(`INSERT INTO reimbursement values(DEFAULT, ${req.session.user.userId}, ${amount}, ${dateSubmitted}, ${dateResolved}, ${description}, ${resolver}, ${status}, ${type})`);
+            let result = await queryMachine(`INSERT INTO reimbursement values(DEFAULT, ${req.session.user.userId}, ${amount}, ${dateSubmitted}, ${dateResolved}, '${description}', ${resolver}, ${status}, ${type})`);
         }
         catch(e){
             throw new Error(e.message);
@@ -160,7 +160,7 @@ reimbursementRouter.post('/', async (req : Request, res : Response) => {
         res.sendStatus(201);
     }
     else{
-        res.status(400).send('Incorrect Reimbursement input. Re-check arguments and their types. ReimbursementId must be passed as 0.');
+        res.status(400).send('Incorrect Reimbursement input. Re-check arguments and their types. ReimbursementId must be passed as 0. Must be signed in.');
     }
 })
 

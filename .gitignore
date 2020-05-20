@@ -63,3 +63,5 @@ typings/
 # ignore local startup shell script
 startup.sh
 
+#node_modules from npm
+node_modules/
