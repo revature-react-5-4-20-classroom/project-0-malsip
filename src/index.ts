@@ -11,7 +11,7 @@ import { createUnsecuredToken } from 'jsontokens'
 
 
 //create dependent variables for connections
-const port : number = 3000;
+const port : number = 3003;
 
 //start express
 const app : Application = express();
@@ -65,6 +65,9 @@ app.listen(port, () => {
     console.log(`App has started - listening on port ${port}\nConnecting to database...`);
     connectionPool.connect().then(() => {console.log('Connected!')});
     test();
+    async function test() {
+        console.log((await connectionPool.query("SELECT * FROM users")).rows);
+    }
 });
 
 
@@ -156,6 +159,3 @@ export async function submitReceipt(userId : number, query : string){
 // - ask about where to store JWT and encryption
 // - ask about what it means to submit a receipt
 
-async function test() {
-    console.log((await connectionPool.query("SELECT * FROM users")).rows);
-}
