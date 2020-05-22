@@ -64,10 +64,6 @@ app.use('/reimbursements', reimbursementRouter);
 app.listen(port, () => {
     console.log(`App has started - listening on port ${port}\nConnecting to database...`);
     connectionPool.connect().then(() => {console.log('Connected!')});
-    test();
-    async function test() {
-        console.log((await connectionPool.query("SELECT * FROM users")).rows);
-    }
 });
 
 
