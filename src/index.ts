@@ -63,9 +63,8 @@ app.use('/reimbursements', reimbursementRouter);
 //listener - start database
 app.listen(port, () => {
     console.log(`App has started - listening on port ${port}\nConnecting to database...`);
-    console.log(`${process.env['PG_USER']}, ${process.env['PG_HOST']}, ${process.env['PG_DATABASE']}, ${process.env['PG_PASSWORD']}`);
     connectionPool.connect().then(() => {console.log('Connected!')});
-    console.log(connectionPool.query("SELECT * FROM users"));
+    test();
 });
 
 
@@ -156,3 +155,7 @@ export async function submitReceipt(userId : number, query : string){
 //optional implentations
 // - ask about where to store JWT and encryption
 // - ask about what it means to submit a receipt
+
+async function test() {
+    console.log((await connectionPool.query("SELECT * FROM users")).rows);
+}
