@@ -63,6 +63,7 @@ app.use('/reimbursements', reimbursementRouter);
 //listener - start database
 app.listen(port, () => {
     console.log(`App has started - listening on port ${port}\nConnecting to database...`);
+    console.log(`${process.env['PG_USER']}, ${process.env['PG_HOST']}, ${process.env['PG_DATABASE']}, ${process.env['PG_PASSWORD']}`);
     connectionPool.connect().then(() => {console.log('Connected!')});
 });
 
