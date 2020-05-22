@@ -1,7 +1,6 @@
 import express, { Application, Request, Response } from 'express';
 import bodyparser from 'body-parser';
 import { Pool, QueryResult } from 'pg';
-import User from './models/Users';
 import { userRouter } from './routers/userRouter';
 import { reimbursementRouter } from './routers/reimbursementRouter';
 import { sessionMiddleware } from './middleware/sessionMiddleware';
@@ -153,5 +152,5 @@ export async function submitReceipt(userId : number, query : string){
 
 //optional implentations
 // - ask about where to store JWT and encryption
-// - ask about what it means to submit a receipt
+// - ask about what it means to submit a receipt - just who does what?
 
