@@ -11,7 +11,7 @@ import { createUnsecuredToken } from 'jsontokens'
 
 
 //create dependent variables for connections
-const port : number = 3006;
+const port : number = 3000;
 
 //start express
 const app : Application = express();
