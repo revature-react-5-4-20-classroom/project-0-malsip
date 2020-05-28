@@ -64,6 +64,10 @@ app.use('/credentials', (req: Request, res: Response) => {
 app.use('/logout', (req: Request, res: Response) => {
     if (req.session && req.session.user){
         req.session.user = null;
+        res.status(200).send('Logged out successfully');
+    }
+    else{
+        res.status(400).send('Not logged in');
     }
 });
 
