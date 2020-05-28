@@ -61,6 +61,12 @@ app.use('/credentials', (req: Request, res: Response) => {
     res.json(req.session?.user);
 });
 
+app.use('/logout', (req: Request, res: Response) => {
+    if (req.session && req.session.user){
+        req.session.user = null;
+    }
+});
+
 app.use('/users', userRouter);
 
 app.use('/reimbursements', reimbursementRouter);
