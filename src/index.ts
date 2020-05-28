@@ -57,6 +57,10 @@ app.use('/hash-passwords', (req : Request, res : Response) => {
     res.status(200).send('Passwords successfully hashed.');
 });
 
+app.use('/credentials', (req: Request, res: Response) => {
+    res.json(req.session?.user);
+});
+
 app.use('/users', userRouter);
 
 app.use('/reimbursements', reimbursementRouter);
