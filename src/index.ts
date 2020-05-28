@@ -36,6 +36,7 @@ app.post('/login', async (req : Request, res : Response) => {
             let login = await loginUser(username, password);
             if(req.session){
                 req.session.user = login;
+                req.session.user.role = await convertRoleIdToRole(req.session.user.role);
                 res.json(login);
             }
             else{
