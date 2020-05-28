@@ -5,8 +5,8 @@ import { hashPassword } from '../hashware/passwordHash';
 
 export const userRouter : Router = express.Router();
 
-//userRouter.use(authUserMiddleware);
-//userRouter.use('/:userId', authUserIdMiddleware);
+userRouter.use(authUserMiddleware);
+userRouter.use('/:userId', authUserIdMiddleware);
 
 userRouter.get('/', async(req : Request, res : Response) => {
     //return all users from database

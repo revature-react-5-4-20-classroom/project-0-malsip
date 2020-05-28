@@ -5,9 +5,9 @@ import { QueryResult } from 'pg';
 
 export const reimbursementRouter : Router = express.Router();
 
-//reimbursementRouter.use('/', authReimbursementMiddleware);
-//reimbursementRouter.use('/status/:statusId', authReimbursementStatusMiddleware);
-//reimbursementRouter.use('/author/userId/:userId', authReimbursementAuthorMiddleware);
+reimbursementRouter.use('/', authReimbursementMiddleware);
+reimbursementRouter.use('/status/:statusId', authReimbursementStatusMiddleware);
+reimbursementRouter.use('/author/userId/:userId', authReimbursementAuthorMiddleware);
 
 reimbursementRouter.get('/status/:statusId*', async(req : Request, res : Response) => {
     const statusId = +req.params.statusId;

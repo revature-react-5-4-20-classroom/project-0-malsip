@@ -6,7 +6,8 @@ import { reimbursementRouter } from './routers/reimbursementRouter';
 import { sessionMiddleware } from './middleware/sessionMiddleware';
 import { PoolClient } from 'pg';
 import { verifyPassword, hashStoredPasswords } from './hashware/passwordHash';
-import { createUnsecuredToken } from 'jsontokens'
+import { createUnsecuredToken } from 'jsontokens';
+import { corsAccessMiddleware} from './middleware/corsAccessMiddleware';
 
 
 //create dependent variables for connections
@@ -23,6 +24,7 @@ export const connectionPool : Pool = new Pool({
 });
 
 //call middleware
+app.use(corsAccessMiddleware);
 app.use(bodyparser.json());
 app.use(sessionMiddleware);
 
