@@ -58,7 +58,14 @@ app.use('/hash-passwords', (req : Request, res : Response) => {
 });
 
 app.use('/credentials', (req: Request, res: Response) => {
-    res.json(req.session?.user);
+    if (req.session && req.session.user){
+        let credentials = req.session.user;
+        credentials.role = convertRoleIdToRole(credentials.role);
+        res.json(credentials);
+    }
+    else{
+        res.json(req.session?.user);
+    }
 });
 
 app.use('/logout', (req: Request, res: Response) => {
