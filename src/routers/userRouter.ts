@@ -62,6 +62,7 @@ userRouter.get('/:userId', async (req : Request, res : Response) => {
         //return user information
         try{
             let result = await queryMachine(`SELECT * FROM users WHERE userid = ${id}`);
+            result.rows[0].role = await convertRoleIdToRole(result.rows[0].role);
             res.json(result.rows);
         }
         catch(e){
@@ -94,7 +95,7 @@ userRouter.patch('/', async (req : Request, res : Response) => {
             await updateTable('users', 'userid', userId, 'email', email, 'string');
             if(typeof(role) == 'number' && role > 0){
                 try{
-                    convertRoleIdToRole(role);
+                    await convertRoleIdToRole(role);
                     await updateTable('users', 'userid', userId, 'role', role, 'number');
                 }
                 catch(e){

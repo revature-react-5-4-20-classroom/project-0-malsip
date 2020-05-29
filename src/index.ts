@@ -59,14 +59,14 @@ app.use('/hash-passwords', (req : Request, res : Response) => {
 });
 
 app.use('/credentials', async (req: Request, res: Response) => {
-    if (req.session && req.session.user){
-        let credentials = req.session.user;  
-        credentials.role = await convertRoleIdToRole(credentials.role);
+   // if (req.session && req.session.user){
+        let credentials = req.session?.user;  
+    //    credentials.role = await convertRoleIdToRole(credentials.role);
         res.json(credentials);
-    }
-    else{
-        res.json(req.session?.user);
-    }
+    //}
+    //else{
+    //    res.json(req.session?.user);
+    //}
 });
 
 app.use('/logout', (req: Request, res: Response) => {
@@ -133,6 +133,36 @@ export async function convertRoleIdToRole(roleId : number) : Promise<string>{
     }
     catch(e){
         throw new Error('could not match role');
+    }
+}
+
+export async function convertStatusIdToStatus(statusId : number) : Promise<string>{
+    try{
+        let result : QueryResult = await queryMachine(`SELECT status FROM reimbursementstatus WHERE statusId = '${statusId}'`);
+        if(result.rows.length > 0 && typeof(result.rows[0]) != 'undefined'){          
+            return result.rows[0].status;
+        }
+        else {
+            throw new Error('could not match status');
+        }
+    }
+    catch(e){
+        throw new Error('could not match status');
+    }
+}
+
+export async function convertTypeIdToType(typeId : number) : Promise<string>{
+    try{
+        let result : QueryResult = await queryMachine(`SELECT type FROM reimbursementtype WHERE typeId = '${typeId}'`);
+        if(result.rows.length > 0 && typeof(result.rows[0]) != 'undefined'){          
+            return result.rows[0].type;
+        }
+        else {
+            throw new Error('could not match type');
+        }
+    }
+    catch(e){
+        throw new Error('could not match type');
     }
 }
 
