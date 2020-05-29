@@ -70,7 +70,7 @@ export const authReimbursementAuthorMiddleware = (req : Request, res : Response,
             console.log('No session or not logged in');
             res.status(401).send('The incoming token has expired');
         }
-        else if(req.session.user.userId != req.params.userId && req.session.user.role !== 'finance-manager'){
+        else if(req.session.user.userid != req.params.userId && req.session.user.role !== 'finance-manager'){
             console.log('Not a finance-manager or proper user');
             res.status(401).send('The incoming token has expired');
         }
