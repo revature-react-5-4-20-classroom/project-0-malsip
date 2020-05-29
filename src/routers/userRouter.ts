@@ -1,7 +1,8 @@
 import express, { Router, Request, Response } from 'express';
 import { authUserMiddleware, authUserIdMiddleware } from '../middleware/authMiddleware';
 import { queryMachine, updateTable, convertRoleIdToRole, convertRoleToRoleId } from '../index';
-import { hashPassword } from '../hashware/passwordHash';
+import { hashPassword, verifyPassword } from '../hashware/passwordHash';
+import { isHashed } from 'password-hash';
 
 export const userRouter : Router = express.Router();
 
@@ -89,7 +90,10 @@ userRouter.patch('/', async (req : Request, res : Response) => {
         //check each variable - if valid, run an update for the new value
         try{
             await updateTable('users', 'userid', userId, 'username', username, 'string');
-            await updateTable('users', 'userid', userId, 'password', hashPassword(password), 'string');
+            if(typeof(password) == 'string' && password !== '' && !isHashed(password)){
+                await updateTable('users', 'userid', userId, 'password', hashPassword(password), 'string');
+            }
+            
             await updateTable('users', 'userid', userId, 'firstname', firstname, 'string');
             await updateTable('users', 'userid', userId, 'lastname', lastname, 'string');
             await updateTable('users', 'userid', userId, 'email', email, 'string');
