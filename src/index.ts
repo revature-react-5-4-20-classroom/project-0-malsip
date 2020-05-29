@@ -58,15 +58,8 @@ app.use('/hash-passwords', (req : Request, res : Response) => {
     res.status(200).send('Passwords successfully hashed.');
 });
 
-app.use('/credentials', async (req: Request, res: Response) => {
-   // if (req.session && req.session.user){
-        let credentials = req.session?.user;  
-    //    credentials.role = await convertRoleIdToRole(credentials.role);
-        res.json(credentials);
-    //}
-    //else{
-    //    res.json(req.session?.user);
-    //}
+app.use('/credentials', async (req: Request, res: Response) => { 
+    res.json(req.session?.user);
 });
 
 app.use('/logout', (req: Request, res: Response) => {
