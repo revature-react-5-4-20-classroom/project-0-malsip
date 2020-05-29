@@ -146,7 +146,7 @@ export async function convertRoleToRoleId(role : string) : Promise<number>{
 
 export async function convertStatusIdToStatus(statusId : number) : Promise<string>{
     try{
-        let result : QueryResult = await queryMachine(`SELECT status FROM reimbursementstatus WHERE statusId = '${statusId}'`);
+        let result : QueryResult = await queryMachine(`SELECT status FROM reimbursementstatus WHERE statusid = '${statusId}'`);
         if(result.rows.length > 0 && typeof(result.rows[0]) != 'undefined'){          
             return result.rows[0].status;
         }
@@ -161,7 +161,7 @@ export async function convertStatusIdToStatus(statusId : number) : Promise<strin
 
 export async function convertTypeIdToType(typeId : number) : Promise<string>{
     try{
-        let result : QueryResult = await queryMachine(`SELECT type FROM reimbursementtype WHERE typeId = '${typeId}'`);
+        let result : QueryResult = await queryMachine(`SELECT type FROM reimbursementtype WHERE typeid = '${typeId}'`);
         if(result.rows.length > 0 && typeof(result.rows[0]) != 'undefined'){          
             return result.rows[0].type;
         }
