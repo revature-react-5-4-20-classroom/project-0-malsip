@@ -95,13 +95,13 @@ export const authUserMiddleware = (req : Request, res : Response, next : NextFun
         console.log('/users');
         if(req.method === 'PATCH'){
             console.log('PATCH');
-            //only allow admin
+            //only allow users to change their own info
             if(!req.session || !req.session.user){
                 console.log('No session or not logged in');
                 res.status(401).send('The incoming token has expired');
             }
-            else if(req.session.user.role !== 'admin'){
-                console.log('Not an admin');
+            else if(req.session.user.userId != req.params.userId){
+                console.log('Not a matching user');
                 res.status(401).send('The incoming token has expired');
             }
             else {

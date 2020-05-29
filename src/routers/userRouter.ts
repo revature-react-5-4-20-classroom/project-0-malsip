@@ -1,6 +1,6 @@
 import express, { Router, Request, Response } from 'express';
 import { authUserMiddleware, authUserIdMiddleware } from '../middleware/authMiddleware';
-import { queryMachine, updateTable, convertRoleIdToRole } from '../index';
+import { queryMachine, updateTable, convertRoleIdToRole, convertRoleToRoleId } from '../index';
 import { hashPassword } from '../hashware/passwordHash';
 
 export const userRouter : Router = express.Router();
@@ -93,6 +93,9 @@ userRouter.patch('/', async (req : Request, res : Response) => {
             await updateTable('users', 'userid', userId, 'firstname', firstname, 'string');
             await updateTable('users', 'userid', userId, 'lastname', lastname, 'string');
             await updateTable('users', 'userid', userId, 'email', email, 'string');
+            if(typeof(role) == 'string' && role !== ''){
+                role = await convertRoleToRoleId(role);
+            }
             if(typeof(role) == 'number' && role > 0){
                 try{
                     await convertRoleIdToRole(role);
@@ -102,6 +105,7 @@ userRouter.patch('/', async (req : Request, res : Response) => {
                     console.log(e.message)
                 }
             }
+            
             
         }
         catch(e){
