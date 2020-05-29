@@ -65,7 +65,7 @@ reimbursementRouter.get('/status/:statusId*', async(req : Request, res : Respons
             }
 
             let result = await queryMachine(query);
-            result.rows.forEach(async (element)=>{
+            await result.rows.forEach(async (element)=>{
                 element.status = await convertStatusIdToStatus(element.status);
                 element.type = await convertTypeIdToType(element.type);
             });
@@ -134,11 +134,11 @@ reimbursementRouter.get('/author/userId/:userId*', async (req : Request, res : R
             }
 
             let result = await queryMachine(query);
-            result.rows.forEach(async (element)=>{
+            await result.rows.forEach(async (element)=>{
                 element.status = await convertStatusIdToStatus(element.status);
                 element.type = await convertTypeIdToType(element.type);
             });
-            
+
             res.json(result.rows);
         }
         catch(e){
