@@ -52,7 +52,7 @@ reimbursementRouter.get('/status/:statusId*', async(req : Request, res : Respons
     else {
         //return status with correct id
         try{
-            let query : string = `SELECT reimbursementid, users.username, amount, datesubmitted, dateresolved, description, resolver, reimbursementstatus.status, reimbursementtype.type FROM ((reimbursement JOIN reimbursementstatus ON reimbursement.status = statusid) LEFT JOIN reimbursementtype ON reimbursement.type = typeid) JOIN users ON reimbursement.author = users.userid WHERE status = ${statusId}`
+            let query : string = `SELECT reimbursementid, users.username, amount, datesubmitted, dateresolved, description, resolvertable.username, reimbursementstatus.status, reimbursementtype.type FROM (((reimbursement JOIN reimbursementstatus ON reimbursement.status = statusid) LEFT JOIN reimbursementtype ON reimbursement.type = typeid) JOIN users ON reimbursement.author = users.userid) JOIN users as resolvertable ON reimbursement.resolver = resolvertable.userid WHERE status = ${statusId}`
             if(typeof(req.query.start) != 'undefined'){
                 query += ` and dateSubmitted = ${startDate}`;
             }
@@ -117,7 +117,7 @@ reimbursementRouter.get('/author/userId/:userId*', async (req : Request, res : R
     else {
         //return with correct user id as author
         try{
-            let query : string = `SELECT reimbursementid, users.username, amount, datesubmitted, dateresolved, description, resolver, reimbursementstatus.status, reimbursementtype.type FROM ((reimbursement JOIN reimbursementstatus ON reimbursement.status = statusid) LEFT JOIN reimbursementtype ON reimbursement.type = typeid)  JOIN users ON reimbursement.author = users.userid WHERE author = ${userId}`
+            let query : string = `SELECT reimbursementid, users.username, amount, datesubmitted, dateresolved, description, resolvertable.username, reimbursementstatus.status, reimbursementtype.type FROM (((reimbursement JOIN reimbursementstatus ON reimbursement.status = statusid) LEFT JOIN reimbursementtype ON reimbursement.type = typeid) JOIN users ON reimbursement.author = users.userid) JOIN users as resolvertable ON reimbursement.resolver = resolvertable.userid WHERE author = ${userId}`
             if(typeof(req.query.start) != 'undefined'){
                 query += ` and dateSubmitted = ${startDate}`;
             }
