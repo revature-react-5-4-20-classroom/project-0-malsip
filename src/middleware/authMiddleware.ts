@@ -30,6 +30,20 @@ export const authReimbursementMiddleware = (req : Request, res : Response, next 
                 next();
             }
         }
+        else if(req.method === 'GET'){
+            console.log('GET');
+            if(!req.session || !req.session.user){
+                console.log('No session or not logged in');
+                res.status(401).send('The incoming token has expired');
+            }
+            else if(req.session.user.role !== 'finance-manager'){
+                console.log('Not a finance-manager or proper user');
+                res.status(401).send('The incoming token has expired');
+            }
+            else {
+                next();
+            }
+        }
         else{
             console.log('No appropriate method called');
             res.status(401).send('The incoming token has expired');

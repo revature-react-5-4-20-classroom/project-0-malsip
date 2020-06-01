@@ -9,6 +9,17 @@ reimbursementRouter.use('/', authReimbursementMiddleware);
 reimbursementRouter.use('/status/:statusId', authReimbursementStatusMiddleware);
 reimbursementRouter.use('/author/userId/:userId', authReimbursementAuthorMiddleware);
 
+reimbursementRouter.get('/', async(req : Request, res : Response) => {
+    //return all reimbursements from database
+    try{
+        let result = await queryMachine(`SELECT reimbursementid, users.username as "author", amount, datesubmitted, dateresolved, description, resolvertable.username as "resolver", reimbursementstatus.status, reimbursementtype.type FROM (((reimbursement JOIN reimbursementstatus ON reimbursement.status = statusid) LEFT JOIN reimbursementtype ON reimbursement.type = typeid) JOIN users ON reimbursement.author = users.userid) JOIN users as resolvertable ON reimbursement.resolver = resolvertable.userid`);
+        res.json(result.rows);
+    }
+    catch(e){
+        throw new Error(e.message);
+    }
+});
+
 reimbursementRouter.get('/status/:statusId*', async(req : Request, res : Response) => {
     const statusId = +req.params.statusId;
 
