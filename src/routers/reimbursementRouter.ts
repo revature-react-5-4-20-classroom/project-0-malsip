@@ -53,7 +53,7 @@ reimbursementRouter.get('/status/:statusId*', async(req : Request, res : Respons
     else {
         //return status with correct id
         try{
-            let query : string = `SELECT * FROM reimbursement JOIN reimbursementstatus ON reimbursement.status = statusid WHERE status = ${statusId}`
+            let query : string = `SELECT * FROM (reimbursement JOIN reimbursementstatus ON reimbursement.status = statusid) JOIN reimbursementtype ON reimbursement.type = typeid WHERE status = ${statusId}`
             if(typeof(req.query.start) != 'undefined'){
                 query += ` and dateSubmitted = ${startDate}`;
             }
@@ -124,7 +124,7 @@ reimbursementRouter.get('/author/userId/:userId*', async (req : Request, res : R
     else {
         //return with correct user id as author
         try{
-            let query : string = `SELECT * FROM reimbursement JOIN reimbursementstatus ON reimbursement.status = statusid WHERE author = ${userId}`
+            let query : string = `SELECT * FROM (reimbursement JOIN reimbursementstatus ON reimbursement.status = statusid) JOIN reimbursementtype ON reimbursement.type = typeid WHERE author = ${userId}`
             if(typeof(req.query.start) != 'undefined'){
                 query += ` and dateSubmitted = ${startDate}`;
             }
