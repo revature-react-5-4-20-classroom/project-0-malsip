@@ -53,7 +53,7 @@ reimbursementRouter.get('/status/:statusId*', async(req : Request, res : Respons
     else {
         //return status with correct id
         try{
-            let query : string = `SELECT * FROM reimbursement WHERE status = ${statusId}`
+            let query : string = `SELECT * FROM reimbursement JOIN reimbursementstatus ON reimbursement.status = statusid WHERE status = ${statusId}`
             if(typeof(req.query.start) != 'undefined'){
                 query += ` and dateSubmitted = ${startDate}`;
             }
@@ -66,12 +66,12 @@ reimbursementRouter.get('/status/:statusId*', async(req : Request, res : Respons
             }
 
             let result = await queryMachine(query);
-            await result.rows.forEach(async (element)=>{
-                element.status = await convertStatusIdToStatus(element.status);
-                if(!isNull(element.type)){
-                    element.type = await convertTypeIdToType(element.type);
-                }
-            });
+            // await result.rows.forEach(async (element)=>{
+            //     element.status = await convertStatusIdToStatus(element.status);
+            //     if(!isNull(element.type)){
+            //         element.type = await convertTypeIdToType(element.type);
+            //     }
+            // });
 
             res.json(result.rows);
         }
@@ -124,7 +124,7 @@ reimbursementRouter.get('/author/userId/:userId*', async (req : Request, res : R
     else {
         //return with correct user id as author
         try{
-            let query : string = `SELECT * FROM reimbursement WHERE author = ${userId}`
+            let query : string = `SELECT * FROM reimbursement JOIN reimbursementstatus ON reimbursement.status = statusid WHERE author = ${userId}`
             if(typeof(req.query.start) != 'undefined'){
                 query += ` and dateSubmitted = ${startDate}`;
             }
@@ -137,12 +137,12 @@ reimbursementRouter.get('/author/userId/:userId*', async (req : Request, res : R
             }
 
             let result = await queryMachine(query);
-            await result.rows.forEach(async (element)=>{
-                element.status = await convertStatusIdToStatus(element.status);
-                if(!isNull(element.type)){
-                    element.type = await convertTypeIdToType(element.type);
-                }
-            });
+            // await result.rows.forEach(async (element)=>{
+            //     element.status = await convertStatusIdToStatus(element.status);
+            //     if(!isNull(element.type)){
+            //         element.type = await convertTypeIdToType(element.type);
+            //     }
+            // });
 
             res.json(result.rows);
         }
