@@ -1,6 +1,6 @@
 import express, { Router, Request, Response } from 'express';
 import { authReimbursementAuthorMiddleware, authReimbursementStatusMiddleware, authReimbursementMiddleware } from '../middleware/authMiddleware';
-import { queryMachine, updateTable } from '../index';
+import { queryMachine, updateTable, convertStatusToStatusId, convertTypeToTypeId } from '../index';
 import { QueryResult } from 'pg';
 
 export const reimbursementRouter : Router = express.Router();
@@ -200,7 +200,13 @@ reimbursementRouter.patch('/', async(req : Request, res : Response) => {
             await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'dateResolved', dateResolved, 'number');
             await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'description', description, 'string');
             await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'resolver', resolver, 'number');
+            if(typeof(status) == 'string'){
+                status = await convertStatusToStatusId(status);
+            }
             await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'status', status, 'number');
+            if(typeof(type) == 'string'){
+                type = await convertTypeToTypeId(type);
+            }
             await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'type', type, 'number');
         }
         catch(e){
