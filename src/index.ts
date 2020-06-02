@@ -145,7 +145,7 @@ export async function convertRoleToRoleId(role : string) : Promise<number>{
     try{
         let result : QueryResult = await queryMachine(`SELECT roleId FROM role WHERE role = '${role}'`);
         if(result.rows.length > 0 && typeof(result.rows[0]) != 'undefined'){          
-            return result.rows[0].roleId;
+            return result.rows[0].roleid;
         }
         else {
             throw new Error('could not match role');
@@ -174,8 +174,8 @@ export async function convertStatusIdToStatus(statusId : number) : Promise<strin
 export async function convertStatusToStatusId(status : string) : Promise<number>{
     try{
         let result : QueryResult = await queryMachine(`SELECT statusId FROM reimbursementstatus WHERE status = '${status}'`);
-        if(result.rows.length > 0 && typeof(result.rows[0]) != 'undefined'){          
-            return result.rows[0].roleId;
+        if(result.rows.length > 0 && typeof(result.rows[0]) != 'undefined'){        
+            return result.rows[0].statusid;
         }
         else {
             throw new Error('could not match status');
@@ -205,7 +205,7 @@ export async function convertTypeToTypeId(type : string) : Promise<number>{
     try{
         let result : QueryResult = await queryMachine(`SELECT typeId FROM reimbursementtype WHERE type = '${type}'`);
         if(result.rows.length > 0 && typeof(result.rows[0]) != 'undefined'){          
-            return result.rows[0].roleId;
+            return result.rows[0].typeid;
         }
         else {
             throw new Error('could not match role');

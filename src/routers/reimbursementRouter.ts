@@ -200,15 +200,11 @@ reimbursementRouter.patch('/', async(req : Request, res : Response) => {
             await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'dateResolved', dateResolved, 'number');
             await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'description', description, 'string');
             await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'resolver', resolver, 'number');
-            try{
-                if(typeof(status) == 'string'){
-                    status = await convertStatusToStatusId(status);
-                }
-                await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'status', status, 'number');
+
+            if(typeof(status) == 'string'){
+                status = await convertStatusToStatusId(status);
             }
-            catch(e){
-                console.log(e.message);
-            }
+            await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'status', status, 'number');
             
             if(typeof(type) == 'string'){
                 type = await convertTypeToTypeId(type);
@@ -222,6 +218,7 @@ reimbursementRouter.patch('/', async(req : Request, res : Response) => {
         //respond with updated data
         try{
             let result = await queryMachine(`SELECT * FROM reimbursement WHERE reimbursementid = ${reimbursementId}`);
+            
             res.json(result.rows);
         }
         catch(e){
