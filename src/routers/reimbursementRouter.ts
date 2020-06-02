@@ -155,15 +155,24 @@ reimbursementRouter.post('/', async (req : Request, res : Response) => {
     let {reimbursementId, amount, dateSubmitted, dateResolved, description, resolver, status, type} = req.body;
 
     //resolver and type can be left empty
-    if((typeof(reimbursementId) == 'number' && reimbursementId === 0) && (req.session && req.session.user) && typeof(amount) == 'number' && typeof(dateSubmitted) == 'number' && typeof(dateResolved) == 'number' && typeof(description) == 'string' && (typeof(resolver) == 'number' || typeof(resolver) == 'undefined') && typeof(status) == 'number' && (typeof(type) == 'number' || typeof(type) == 'undefined')){
+    if((typeof(reimbursementId) == 'number' && reimbursementId === 0) && (req.session && req.session.user) && typeof(amount) == 'number' && typeof(dateSubmitted) == 'number' && typeof(dateResolved) == 'number' && typeof(description) == 'string' && (typeof(resolver) == 'number' || typeof(resolver) == 'undefined') && (typeof(status) == 'number' || typeof(status) == 'string') && (typeof(type) == 'number' || typeof(type) == 'string' || typeof(type) == 'undefined')){
         //add reimbursement to database
         try{
             if(typeof(resolver) == 'undefined'){
                 resolver = 'NULL';
             }
+            if(typeof(status) == 'string'){
+                status = await convertStatusToStatusId(status);
+            }
+            if(typeof(type) == 'string'){
+                type = await convertTypeToTypeId(type);
+            }
             if(typeof(type) == 'undefined'){
                 type = 'NULL';
             }
+            
+            
+
             console.log(`INSERT INTO reimbursement values(DEFAULT, ${req.session.user.userId}, ${amount}, ${dateSubmitted}, ${dateResolved}, ${description}, ${resolver}, ${status}, ${type})`);
             let result = await queryMachine(`INSERT INTO reimbursement values(DEFAULT, ${req.session.user.userId}, ${amount}, ${dateSubmitted}, ${dateResolved}, '${description}', ${resolver}, ${status}, ${type})`);
         }
