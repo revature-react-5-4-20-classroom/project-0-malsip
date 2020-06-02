@@ -177,7 +177,8 @@ reimbursementRouter.post('/', async (req : Request, res : Response) => {
             let result = await queryMachine(`INSERT INTO reimbursement values(DEFAULT, ${req.session.user.userId}, ${amount}, ${dateSubmitted}, ${dateResolved}, '${description}', ${resolver}, ${status}, ${type})`);
         }
         catch(e){
-            throw new Error(e.message);
+            console.log(e.message);
+            res.status(400).send('Issues posting...');
         }
         res.sendStatus(201);
     }
