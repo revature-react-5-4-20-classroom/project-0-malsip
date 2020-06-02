@@ -173,8 +173,8 @@ reimbursementRouter.post('/', async (req : Request, res : Response) => {
             
             
 
-            console.log(`INSERT INTO reimbursement values(DEFAULT, ${req.session.user.userid}, ${amount}, ${dateSubmitted}, ${dateResolved}, ${description}, ${resolver}, ${status}, ${type})`);
-            let result = await queryMachine(`INSERT INTO reimbursement values(DEFAULT, ${req.session.user.userid}, ${amount}, ${dateSubmitted}, ${dateResolved}, '${description}', ${resolver}, ${status}, ${type})`);
+            console.log(`INSERT INTO reimbursement values(DEFAULT, ${req.session.user.userid ? req.session.user.userid : req.session.user.userId}, ${amount}, ${dateSubmitted}, ${dateResolved}, ${description}, ${resolver}, ${status}, ${type})`);
+            let result = await queryMachine(`INSERT INTO reimbursement values(DEFAULT, ${req.session.user.userid ? req.session.user.userid : req.session.user.userId}, ${amount}, ${dateSubmitted}, ${dateResolved}, '${description}', ${resolver}, ${status}, ${type})`);
         }
         catch(e){
             console.log(e.message);
