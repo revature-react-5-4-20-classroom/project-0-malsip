@@ -12,7 +12,7 @@ reimbursementRouter.use('/author/userId/:userId', authReimbursementAuthorMiddlew
 reimbursementRouter.get('/', async(req : Request, res : Response) => {
     //return all reimbursements from database
     try{
-        let result = await queryMachine(`SELECT reimbursementid, users.username as "author", amount, datesubmitted, dateresolved, description, resolvertable.username as "resolver", reimbursementstatus.status, reimbursementtype.type FROM (((reimbursement JOIN reimbursementstatus ON reimbursement.status = statusid) LEFT JOIN reimbursementtype ON reimbursement.type = typeid) JOIN users ON reimbursement.author = users.userid) LEFT JOIN users as resolvertable ON reimbursement.resolver = resolvertable.userid`);
+        let result = await queryMachine(`SELECT reimbursementid, users.username as "author", amount, datesubmitted, dateresolved, description, resolvertable.username as "resolver", reimbursementstatus.status, reimbursementtype.type FROM (((reimbursement LEFT JOIN reimbursementstatus ON reimbursement.status = statusid) LEFT JOIN reimbursementtype ON reimbursement.type = typeid) LEFT JOIN users ON reimbursement.author = users.userid) LEFT JOIN users as resolvertable ON reimbursement.resolver = resolvertable.userid`);
         res.json(result.rows);
     }
     catch(e){
