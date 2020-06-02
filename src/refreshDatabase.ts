@@ -75,9 +75,9 @@ export async function refreshDatabase(){
 
     await queryMachine(`INSERT INTO reimbursement(author, amount, dateSubmitted, dateResolved, description, resolver, status, type) values
     ((SELECT userId FROM users WHERE username = 'guest'), 5, 2015, 2017, 'I AM A GUEST!', NULL, (SELECT statusId FROM reimbursementStatus WHERE status = 'terminated'), NULL),
-    ((SELECT userId FROM users WHERE username = 'admin'), 100, 2019, 2020, 'fm owes me money', (SELECT userId FROM users WHERE username = 'fm'), (SELECT statusId FROM reimbursementStatus WHERE status = 'complete'), (SELECT typeId FROM reimbursementType WHERE type = 'full')),
+    ((SELECT userId FROM users WHERE username = 'admin'), 100, 2019, 2019, 'fm owes me money', (SELECT userId FROM users WHERE username = 'fm'), (SELECT statusId FROM reimbursementStatus WHERE status = 'complete'), (SELECT typeId FROM reimbursementType WHERE type = 'full')),
     ((SELECT userId FROM users WHERE username = 'fm'), 25, 2015, 2016, 'admin owes me money', (SELECT userId FROM users WHERE username = 'admin'), (SELECT statusId FROM reimbursementStatus WHERE status = 'complete'), (SELECT typeId FROM reimbursementType WHERE type = 'partial')),
     ((SELECT userId FROM users WHERE username = 'JD'), 980, 2013, 2014, 'i demand compensation!', NULL, (SELECT statusId FROM reimbursementStatus WHERE status = 'in-progress'), (SELECT typeId FROM reimbursementType WHERE type = 'half')),
-    ((SELECT userId FROM users WHERE username = 'hackerman'), 1000000, 2010, 2020, 'give me tha dough', (SELECT userId FROM users WHERE username = 'hackerman'), (SELECT statusId FROM reimbursementStatus WHERE status = 'on-hold'), (SELECT typeId FROM reimbursementType WHERE type = 'full'));`);
+    ((SELECT userId FROM users WHERE username = 'hackerman'), 1000000, 2010, 2019, 'give me tha dough', (SELECT userId FROM users WHERE username = 'hackerman'), (SELECT statusId FROM reimbursementStatus WHERE status = 'on-hold'), (SELECT typeId FROM reimbursementType WHERE type = 'full'));`);
 
 }

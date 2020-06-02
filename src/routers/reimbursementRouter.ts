@@ -200,10 +200,16 @@ reimbursementRouter.patch('/', async(req : Request, res : Response) => {
             await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'dateResolved', dateResolved, 'number');
             await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'description', description, 'string');
             await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'resolver', resolver, 'number');
-            if(typeof(status) == 'string'){
-                status = await convertStatusToStatusId(status);
+            try{
+                if(typeof(status) == 'string'){
+                    status = await convertStatusToStatusId(status);
+                }
+                await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'status', status, 'number');
             }
-            await updateTable('reimbursement', 'reimbursementId', reimbursementId, 'status', status, 'number');
+            catch(e){
+                console.log(e.message);
+            }
+            
             if(typeof(type) == 'string'){
                 type = await convertTypeToTypeId(type);
             }
