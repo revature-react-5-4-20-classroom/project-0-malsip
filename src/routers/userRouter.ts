@@ -120,7 +120,7 @@ userRouter.patch('/', async (req : Request, res : Response) => {
         try{
             let result = await queryMachine(`SELECT * FROM users JOIN role ON users.role = roleid WHERE userid = ${userId}`);
             if(req.session){
-                req.session.user = result;
+                req.session.user = result.rows[0];
             }
             
             res.json(result.rows);
