@@ -152,10 +152,10 @@ reimbursementRouter.get('/author/userId/:userId*', async (req : Request, res : R
 
 
 reimbursementRouter.post('/', async (req : Request, res : Response) => {
-    let {reimbursementId, amount, dateSubmitted, dateResolved, description, resolver, status, type} = req.body;
+    let {reimbursementId, author, amount, dateSubmitted, dateResolved, description, resolver, status, type} = req.body;
 
     //resolver and type can be left empty
-    if((typeof(reimbursementId) == 'number' && reimbursementId === 0) && (req.session && req.session.user) && typeof(amount) == 'number' && typeof(dateSubmitted) == 'number' && typeof(dateResolved) == 'number' && typeof(description) == 'string' && (typeof(resolver) == 'number' || typeof(resolver) == 'undefined') && (typeof(status) == 'number' || typeof(status) == 'string') && (typeof(type) == 'number' || typeof(type) == 'string' || typeof(type) == 'undefined')){
+    if((typeof(reimbursementId) == 'number' && reimbursementId === 0) && typeof(author) == 'number' && typeof(amount) == 'number' && typeof(dateSubmitted) == 'number' && typeof(dateResolved) == 'number' && typeof(description) == 'string' && (typeof(resolver) == 'number' || typeof(resolver) == 'undefined') && (typeof(status) == 'number' || typeof(status) == 'string') && (typeof(type) == 'number' || typeof(type) == 'string' || typeof(type) == 'undefined')){
         //add reimbursement to database
         try{
             if(typeof(resolver) == 'undefined'){
@@ -173,8 +173,8 @@ reimbursementRouter.post('/', async (req : Request, res : Response) => {
             
             
 
-            console.log(`INSERT INTO reimbursement values(DEFAULT, ${req.session.user.userid ? req.session.user.userid : req.session.user.userId}, ${amount}, ${dateSubmitted}, ${dateResolved}, ${description}, ${resolver}, ${status}, ${type})`);
-            let result = await queryMachine(`INSERT INTO reimbursement values(DEFAULT, ${req.session.user.userid ? req.session.user.userid : req.session.user.userId}, ${amount}, ${dateSubmitted}, ${dateResolved}, '${description}', ${resolver}, ${status}, ${type})`);
+            console.log(`INSERT INTO reimbursement values(DEFAULT, ${author}, ${amount}, ${dateSubmitted}, ${dateResolved}, ${description}, ${resolver}, ${status}, ${type})`);
+            let result = await queryMachine(`INSERT INTO reimbursement values(DEFAULT, ${author}, ${amount}, ${dateSubmitted}, ${dateResolved}, '${description}', ${resolver}, ${status}, ${type})`);
         }
         catch(e){
             console.log(e.message);
