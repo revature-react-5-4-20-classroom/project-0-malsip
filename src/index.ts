@@ -208,11 +208,11 @@ export async function convertTypeToTypeId(type : string) : Promise<number>{
             return result.rows[0].typeid;
         }
         else {
-            throw new Error('could not match role');
+            throw new Error('could not match type');
         }
     }
     catch(e){
-        throw new Error('could not match role');
+        throw new Error('could not match type');
     }
 }
 
