@@ -119,6 +119,11 @@ userRouter.patch('/', async (req : Request, res : Response) => {
         //respond with updated data
         try{
             let result = await queryMachine(`SELECT * FROM users JOIN role ON users.role = roleid WHERE userid = ${userId}`);
+            if(req.session){
+                req.session.user = result;
+                req.session.user.role = await convertRoleIdToRole(req.session.user.role);
+            }
+            
             res.json(result.rows);
         }
         catch(e){
