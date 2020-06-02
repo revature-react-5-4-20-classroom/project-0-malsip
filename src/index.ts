@@ -8,6 +8,7 @@ import { PoolClient } from 'pg';
 import { verifyPassword, hashStoredPasswords } from './hashware/passwordHash';
 import { createUnsecuredToken } from 'jsontokens';
 import { corsAccessMiddleware} from './middleware/corsAccessMiddleware';
+import { refreshDatabase } from './refreshDatabase';
 
 
 //create dependent variables for connections
@@ -53,9 +54,20 @@ app.post('/login', async (req : Request, res : Response) => {
     }
 })
 
-app.use('/hash-passwords', (req : Request, res : Response) => {
-    hashStoredPasswords(res);
-    res.status(200).send('Passwords successfully hashed.');
+// app.use('/hash-passwords', (req : Request, res : Response) => {
+//     hashStoredPasswords(res);
+//     res.status(200).send('Passwords successfully hashed.');
+// });
+
+app.use('/refreshDatabase', async (req : Request, res : Response) => {
+    //refresh all tables to default values
+    await refreshDatabase();
+
+    //hash the passwords
+    await hashStoredPasswords(res);
+
+
+    res.status(200).send('Successfully refreshed');
 });
 
 app.use('/credentials', async (req: Request, res: Response) => { 
