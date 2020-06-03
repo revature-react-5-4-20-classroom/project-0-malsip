@@ -12,7 +12,7 @@ userRouter.use('/:userId', authUserIdMiddleware);
 userRouter.get('/', async(req : Request, res : Response) => {
     //return all users from database
     try{
-        let result = await queryMachine(`SELECT * FROM users`);
+        let result = await queryMachine(`SELECT * FROM users JOIN role ON users.role = roleid `);
         res.json(result.rows);
     }
     catch(e){
