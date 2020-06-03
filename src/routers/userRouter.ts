@@ -12,7 +12,7 @@ userRouter.use('/:userId', authUserIdMiddleware);
 userRouter.get('/', async(req : Request, res : Response) => {
     //return all users from database
     try{
-        let result = await queryMachine(`SELECT * FROM users JOIN role ON users.role = roleid `);
+        let result = await queryMachine(`SELECT * FROM users JOIN role ON users.role = roleid ORDERBY userid`);
         res.json(result.rows);
     }
     catch(e){
@@ -42,7 +42,7 @@ userRouter.get('/orders?', async(req : Request, res : Response) => {
 
     //return all users from database
     try{
-        let query : string = `SELECT * FROM users`
+        let query : string = `SELECT * FROM users JOIN role ON users.role = roleid ORDERBY userid`
         if(limit != 0){
             query += ` LIMIT ${limit} OFFSET ${offset}`;
         }
@@ -62,7 +62,7 @@ userRouter.get('/:userId', async (req : Request, res : Response) => {
     else{
         //return user information
         try{
-            let result = await queryMachine(`SELECT * FROM users JOIN role ON users.role = roleid WHERE userid = ${id}`);
+            let result = await queryMachine(`SELECT * FROM users JOIN role ON users.role = roleid WHERE userid = ${id} ORDERBY userid`);
             
             res.json(result.rows);
         }
