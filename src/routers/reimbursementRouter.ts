@@ -20,6 +20,107 @@ reimbursementRouter.get('/', async(req : Request, res : Response) => {
     }
 });
 
+reimbursementRouter.get('/advanced/orders?', async(req : Request, res : Response) => {
+
+    let author: string = '';
+    if(typeof(req.query.author) != 'undefined'){
+        author = req.query.author + '';
+    }
+    let dateSubmitted;
+    if(typeof(req.query.datesubmitted) != 'undefined'){
+        dateSubmitted = +req.query.datesubmitted;
+        if(isNaN(dateSubmitted)){
+            res.status(400).send('Start Date must be numeric');
+            return;
+        }
+    }
+    let dateResolved;
+    if(typeof(req.query.dateresolved) != 'undefined'){
+        dateResolved = +req.query.dateresolved;
+        if(isNaN(dateResolved)){
+            res.status(400).send('End Date must be numeric');
+            return;
+        }
+    }
+    let resolver: string = '';
+    if(typeof(req.query.resolver) != 'undefined'){
+        resolver = req.query.resolver + '';
+    }
+    let status : string = '';
+    if(typeof(req.query.status) != 'undefined'){
+        status = req.query.status + '';
+    }
+
+    let limit = 0;
+    let offset = 0;
+    if(typeof(req.query.limit) != 'undefined'){
+        limit = +req.query.limit;
+        if(isNaN(limit)){
+            res.status(400).send('Limit must be numeric');
+            return;
+        }
+        if(typeof(req.query.offset) != 'undefined'){
+            offset = +req.query.offset;
+            if(isNaN(offset)){
+                res.status(400).send('Offset Id must be numeric');
+                return;
+            }
+        }
+    }
+
+    //return all users with matching queries
+    try{
+        let query : string = `SELECT reimbursementid, users.username as "author", amount, datesubmitted, dateresolved, description, resolvertable.username as "resolver", reimbursementstatus.status, reimbursementtype.type FROM (((reimbursement LEFT JOIN reimbursementstatus ON reimbursement.status = statusid) LEFT JOIN reimbursementtype ON reimbursement.type = typeid) LEFT JOIN users ON reimbursement.author = users.userid) LEFT JOIN users as resolvertable ON reimbursement.resolver = resolvertable.userid `
+        let first: boolean = true;
+        
+        if(typeof(req.query.author) != 'undefined'){
+            onFirst(query, first);
+            query += ` users.username = ${author}`;
+        }
+        if(typeof(req.query.datesubmitted) != 'undefined'){
+            onFirst(query, first);
+            query += ` reimbursement.dateSubmitted = ${dateSubmitted}`;
+        }
+        if(typeof(req.query.dateresolved) != 'undefined'){
+            onFirst(query, first);
+            query += ` reimbursement.dateResolved = ${dateResolved}`;
+        }
+        if(typeof(req.query.resolver) != 'undefined'){
+            onFirst(query, first);
+            query += ` resolvertable.username = ${resolver}`;
+        }
+        if(typeof(req.query.status) != 'undefined'){
+            onFirst(query, first);
+            let tempStatus = await convertStatusToStatusId(status);
+            query += ` reimbursement.status = ${tempStatus}`;
+        }
+        query += ` ORDER BY datesubmitted`;
+        if(limit !== 0){
+            query += ` LIMIT ${limit} OFFSET ${offset}`;
+        }
+
+        let result = await queryMachine(query);
+
+        res.json(result.rows);
+    }
+    catch(e){
+        console.log(e.message);
+        res.status(400).send(e.message);
+    }
+    
+})
+
+function onFirst(query: string, first: boolean): string{
+    if(first){
+        query+= 'WHERE '
+        first = false;
+    }
+    else{
+        query+= ' AND'
+    }
+    return query;
+}
+
 reimbursementRouter.get('/status/:statusId*', async(req : Request, res : Response) => {
     const statusId = +req.params.statusId;
 
