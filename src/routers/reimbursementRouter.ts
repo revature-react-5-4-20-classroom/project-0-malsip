@@ -73,27 +73,57 @@ reimbursementRouter.get('/advanced/orders?', async(req : Request, res : Response
 
     //return all users with matching queries
     try{
-        let query : string = `SELECT reimbursementid, users.username as "author", amount, datesubmitted, dateresolved, description, resolvertable.username as "resolver", reimbursementstatus.status, reimbursementtype.type FROM (((reimbursement LEFT JOIN reimbursementstatus ON reimbursement.status = statusid) LEFT JOIN reimbursementtype ON reimbursement.type = typeid) LEFT JOIN users ON reimbursement.author = users.userid) LEFT JOIN users as resolvertable ON reimbursement.resolver = resolvertable.userid `
+        let query : string = `SELECT reimbursementid, users.username as "author", amount, datesubmitted, dateresolved, description, resolvertable.username as "resolver", reimbursementstatus.status, reimbursementtype.type FROM (((reimbursement LEFT JOIN reimbursementstatus ON reimbursement.status = statusid) LEFT JOIN reimbursementtype ON reimbursement.type = typeid) LEFT JOIN users ON reimbursement.author = users.userid) LEFT JOIN users as resolvertable ON reimbursement.resolver = resolvertable.userid`
         let first: boolean = true;
         
         if(author !== ''){
-            onFirst(query, first);
-            query += ` users.username = ${author}`;
+            if(first){
+                query+= ' WHERE'
+                first = false;
+            }
+            else{
+                query+= ' AND'
+            }
+            query += ` users.username = '${author}'`;
         }
         if(typeof(req.query.datesubmitted) != 'undefined'){
-            onFirst(query, first);
+            if(first){
+                query+= ' WHERE'
+                first = false;
+            }
+            else{
+                query+= ' AND'
+            }
             query += ` reimbursement.dateSubmitted = ${dateSubmitted}`;
         }
         if(typeof(req.query.dateresolved) != 'undefined'){
-            onFirst(query, first);
+            if(first){
+                query+= ' WHERE'
+                first = false;
+            }
+            else{
+                query+= ' AND'
+            }
             query += ` reimbursement.dateResolved = ${dateResolved}`;
         }
         if(resolver !== ''){
-            onFirst(query, first);
-            query += ` resolvertable.username = ${resolver}`;
+            if(first){
+                query+= ' WHERE'
+                first = false;
+            }
+            else{
+                query+= ' AND'
+            }
+            query += ` resolvertable.username = '${resolver}'`;
         }
         if(status !== ''){
-            onFirst(query, first);
+            if(first){
+                query+= ' WHERE'
+                first = false;
+            }
+            else{
+                query+= ' AND'
+            }
             let tempStatus = await convertStatusToStatusId(status);
             query += ` reimbursement.status = ${tempStatus}`;
         }
@@ -101,6 +131,8 @@ reimbursementRouter.get('/advanced/orders?', async(req : Request, res : Response
         if(limit !== 0){
             query += ` LIMIT ${limit} OFFSET ${offset}`;
         }
+
+        console.log(query);
 
         let result = await queryMachine(query);
 
@@ -112,17 +144,6 @@ reimbursementRouter.get('/advanced/orders?', async(req : Request, res : Response
     }
     
 })
-
-function onFirst(query: string, first: boolean): string{
-    if(first){
-        query+= 'WHERE '
-        first = false;
-    }
-    else{
-        query+= ' AND'
-    }
-    return query;
-}
 
 reimbursementRouter.get('/status/:statusId*', async(req : Request, res : Response) => {
     const statusId = +req.params.statusId;
