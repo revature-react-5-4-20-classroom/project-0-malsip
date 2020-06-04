@@ -25,8 +25,11 @@ reimbursementRouter.get('/advanced/orders?', async(req : Request, res : Response
     let author: string = '';
     if(typeof(req.query.author) != 'undefined'){
         author = req.query.author + '';
+        if(author == '0'){
+            author = '';
+        }
     }
-    let dateSubmitted;
+    let dateSubmitted: number = 0;
     if(typeof(req.query.datesubmitted) != 'undefined'){
         dateSubmitted = +req.query.datesubmitted;
         if(isNaN(dateSubmitted)){
@@ -34,7 +37,7 @@ reimbursementRouter.get('/advanced/orders?', async(req : Request, res : Response
             return;
         }
     }
-    let dateResolved;
+    let dateResolved: number = 0;
     if(typeof(req.query.dateresolved) != 'undefined'){
         dateResolved = +req.query.dateresolved;
         if(isNaN(dateResolved)){
@@ -73,7 +76,7 @@ reimbursementRouter.get('/advanced/orders?', async(req : Request, res : Response
         let query : string = `SELECT reimbursementid, users.username as "author", amount, datesubmitted, dateresolved, description, resolvertable.username as "resolver", reimbursementstatus.status, reimbursementtype.type FROM (((reimbursement LEFT JOIN reimbursementstatus ON reimbursement.status = statusid) LEFT JOIN reimbursementtype ON reimbursement.type = typeid) LEFT JOIN users ON reimbursement.author = users.userid) LEFT JOIN users as resolvertable ON reimbursement.resolver = resolvertable.userid `
         let first: boolean = true;
         
-        if(typeof(req.query.author) != 'undefined'){
+        if(author !== ''){
             onFirst(query, first);
             query += ` users.username = ${author}`;
         }
@@ -85,11 +88,11 @@ reimbursementRouter.get('/advanced/orders?', async(req : Request, res : Response
             onFirst(query, first);
             query += ` reimbursement.dateResolved = ${dateResolved}`;
         }
-        if(typeof(req.query.resolver) != 'undefined'){
+        if(resolver !== ''){
             onFirst(query, first);
             query += ` resolvertable.username = ${resolver}`;
         }
-        if(typeof(req.query.status) != 'undefined'){
+        if(status !== ''){
             onFirst(query, first);
             let tempStatus = await convertStatusToStatusId(status);
             query += ` reimbursement.status = ${tempStatus}`;
