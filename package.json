@@ -20,7 +20,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "express-session": "^1.17.1",
     "jsontokens": "^3.0.0",
     "password-hash": "^1.2.2",
